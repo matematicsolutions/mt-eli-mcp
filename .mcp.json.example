@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "mt-eli-mcp": {
+      "command": "mt-eli-mcp",
+      "env": {
+        "MT_ELI_BASE_URL": "https://legislation.mt",
+        "MT_ELI_CACHE_DIR": "~/.matematic/cache/mt-eli",
+        "MT_ELI_AUDIT_DIR": "~/.matematic/audit"
+      }
+    }
+  }
+}
