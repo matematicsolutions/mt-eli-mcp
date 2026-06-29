@@ -32,6 +32,14 @@ Every response carries the contract: `eli_uri` (the legislation.mt URL, e.g.
 
 ## Install
 
+Run it with no install step (once published to PyPI):
+
+```bash
+uvx mt-eli-mcp
+```
+
+Or from source:
+
 ```bash
 cd mt-eli-mcp
 pip install -e .
