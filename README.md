@@ -1,5 +1,7 @@
 # mt-eli-mcp
 
+<!-- mcp-name: io.github.matematicsolutions/mt-eli-mcp -->
+
 An MCP server for the Maltese legislation portal **legislation.mt**, the official source of
 consolidated Maltese law. It fetches document metadata and full text, with verifiable citations.
 
