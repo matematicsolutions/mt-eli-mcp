@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mt-eli-mcp"
-version = "0.1.1"
+version = "0.2.0"
 description = "MCP server for the Maltese legislation portal (legislation.mt) - consolidated Maltese law with ELI identifiers and verifiable citations."
 readme = "README.md"
 license = { text = "Apache-2.0" }
