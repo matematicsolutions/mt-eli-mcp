@@ -24,6 +24,7 @@ from .citations import build_record, extract_pdf_text, is_valid_eli, normalize_e
 from . import runtime
 from .client import DEFAULT_BASE_URL, MaltaClient
 from .models import Act, LawText
+from .coverage import Coverage, build_coverage
 
 INSTRUCTIONS = """\
 This MCP server exposes the Maltese legislation portal (legislation.mt), the official source of consolidated Maltese law. Documents are addressed by ELI coordinate. Every response carries a stable `eli_uri`, a `human_readable_citation` and a `source_url` (the citation contract).
@@ -157,6 +158,20 @@ async def mt_get_act(eli: str, lang: str = "eng") -> Act:
 
 # ---------------------------------------------------------------------------
 # mt_get_text
+@mcp.tool(annotations=READ_ONLY)
+async def mt_coverage() -> Coverage:
+    """Declare what this connector covers, how it is sourced, and what it does NOT cover.
+
+    Call this before telling a user that the law "does not contain" something, and whenever
+    a search comes back empty: the absence may be a gap in this connector rather than in the
+    law. Every gap carries a fallback saying where to look instead.
+
+    Returns:
+        ``Coverage`` with families, an as-of note, and a non-empty list of known gaps.
+    """
+    return build_coverage()
+
+
 # ---------------------------------------------------------------------------
 
 

@@ -24,6 +24,7 @@ each page carries schema.org/ELI JSON-LD.
 |---|---|
 | `mt_get_act` | Metadata for a document by ELI coordinate (JSON-LD). |
 | `mt_get_text` | Full text by ELI coordinate (extracted from the official PDF). |
+| `mt_coverage` | Declare what this connector covers, when each family was captured, and - explicitly - what it does NOT cover. Every gap carries a fallback. |
 
 ELI coordinates (`eli`): `cap/586` (Chapter), `const` (Constitution), `sl/586.01` (subsidiary
 legislation), `act/2018/20` (Act), `ln/2018/123` (Legal Notice).
