@@ -45,6 +45,7 @@ Pass `eli` as the path after `/eli/`:
 
 ## Hard constraints
 
+- **Do not answer past the edge of this corpus** - when a search comes back empty, or the question touches material this connector does not carry, call `mt_coverage` and relay what it says is missing. Absence here is not absence in the law.
 - **Address by ELI coordinate, not keywords** - there is no free-text search here. A Maltese citation gives the coordinate (e.g. "Cap. 586"). Relay the `dataset_note`.
 - **ELI is the key to citability** - `eli_uri` is the legislation.mt/eli/... URL; do not invent it. It is confirmed against the page's `legislationIdentifier`.
 - **Text comes from the PDF** - `mt_get_text` extracts text from the official PDF; layout artefacts are possible. Relay the `text_note`.
