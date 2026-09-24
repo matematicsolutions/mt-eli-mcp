@@ -42,16 +42,26 @@ def eli_uri(eli: str, lang: str = "eng") -> str:
     return f"{BASE_URL}/eli/{normalize_eli(eli)}/{lang}"
 
 
-def parse_jsonld(html: str) -> dict[str, Any]:
-    """Extract the schema.org/ELI JSON-LD metadata block from a legislation.mt page."""
+def jsonld_with_status(html: str) -> tuple[dict[str, Any], str]:
+    """JSON-LD block plus its status: ``ok``, ``absent`` or ``unparseable``.
+
+    2026-09-24: a broken JSON-LD block used to look exactly like a page without
+    metadata, and ``mt_get_act`` then answered ``not_found`` - an upstream failure
+    presented as "no such act" (pattern from aws/context-ontology-accelerator issue 59).
+    """
     m = _JSONLD_RE.search(html)
     if not m:
-        return {}
+        return {}, "absent"
     try:
         data = json.loads(m.group(1))
     except json.JSONDecodeError:
-        return {}
-    return data if isinstance(data, dict) else {}
+        return {}, "unparseable"
+    return (data, "ok") if isinstance(data, dict) else ({}, "unparseable")
+
+
+def parse_jsonld(html: str) -> dict[str, Any]:
+    """Extract the schema.org/ELI JSON-LD metadata block from a legislation.mt page."""
+    return jsonld_with_status(html)[0]
 
 
 def extract_pdf_id(html: str) -> str | None:
@@ -104,7 +114,7 @@ def _citation(name: str | None, eli: str) -> str | None:
 
 def build_record(html: str, eli: str, lang: str = "eng") -> dict[str, Any]:
     """Build a citation-bearing record from a legislation.mt page's JSON-LD."""
-    meta = parse_jsonld(html)
+    meta, metadata_status = jsonld_with_status(html)
     name = meta.get("name") or meta.get("alternativeHeadline")
     if isinstance(name, dict):
         name = name.get("value")
@@ -121,6 +131,7 @@ def build_record(html: str, eli: str, lang: str = "eng") -> dict[str, Any]:
         "human_readable_citation": _citation(name, eli),
         "source_url": eli_uri(eli, lang),
         "pdf_id": extract_pdf_id(html),
+        "metadata_status": metadata_status,
     }
 
 

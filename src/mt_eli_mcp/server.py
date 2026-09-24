@@ -149,6 +149,12 @@ async def mt_get_act(eli: str, lang: str = "eng") -> Act:
             raise _map_upstream(exc) from exc
 
     rec = build_record(html, eli, lang)
+    if rec.get("metadata_status") == "unparseable":
+        audit.log(tool="mt_get_act", input_hash=input_hash, output_count_or_size=0,
+                  duration_ms=t.duration_ms, status="error", error="upstream_error")
+        raise ToolError("upstream_error",
+                        f"legislation.mt returned unparseable JSON-LD metadata for eli={eli!r}; "
+                        "this is a source failure, not a missing act.")
     if not rec.get("title") and not rec.get("legislation_identifier"):
         raise ToolError("not_found", f"No document metadata for eli={eli!r} on legislation.mt.")
     act = Act.model_validate(rec)
