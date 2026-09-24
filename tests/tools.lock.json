@@ -1,0 +1,429 @@
+{
+  "package_version": "0.3.4",
+  "tools": {
+    "mt_coverage": {
+      "descriptor": {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true,
+          "readOnlyHint": true
+        },
+        "description": "Declare what this connector covers, how it is sourced, and what it does NOT cover.\n\nCall this before telling a user that the law \"does not contain\" something, and whenever\na search comes back empty: the absence may be a gap in this connector rather than in the\nlaw. Every gap carries a fallback saying where to look instead.\n\nReturns:\n    ``Coverage`` with families, an as-of note, and a non-empty list of known gaps.",
+        "inputSchema": {
+          "additionalProperties": false,
+          "properties": {},
+          "type": "object"
+        },
+        "meta": {
+          "fastmcp": {
+            "tags": []
+          }
+        },
+        "name": "mt_coverage",
+        "outputSchema": {
+          "additionalProperties": true,
+          "description": "What this connector covers, how it is sourced, and what it does not cover.",
+          "properties": {
+            "as_of_note": {
+              "description": "States what the dates mean, and what they do not promise.",
+              "type": "string"
+            },
+            "families": {
+              "items": {
+                "additionalProperties": true,
+                "description": "One data family this connector exposes.",
+                "properties": {
+                  "captured_at": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ],
+                    "default": null,
+                    "description": "Date this family was last captured (ISO). None when queried live."
+                  },
+                  "live": {
+                    "default": true,
+                    "description": "True when queried live instead of from a snapshot.",
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "description": "Data family, e.g. 'Federal legislation'.",
+                    "type": "string"
+                  },
+                  "source": {
+                    "description": "Official source the data comes from.",
+                    "type": "string"
+                  },
+                  "tool": {
+                    "description": "Tool or tools that reach this family.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "tool",
+                  "source"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "known_gaps": {
+              "description": "Never empty. An empty list would mean 'not checked', not 'no gaps'.",
+              "items": {
+                "additionalProperties": true,
+                "description": "A known, named hole in this connector's coverage - plus the way around it.",
+                "properties": {
+                  "fallback": {
+                    "description": "Where to go instead.",
+                    "type": "string"
+                  },
+                  "family": {
+                    "description": "Which family the gap belongs to.",
+                    "type": "string"
+                  },
+                  "id": {
+                    "description": "Stable gap identifier.",
+                    "type": "string"
+                  },
+                  "missing": {
+                    "description": "What is NOT available through this connector.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "family",
+                  "missing",
+                  "fallback"
+                ],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "status": {
+              "default": "ok",
+              "enum": [
+                "ok",
+                "degraded",
+                "failed"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "as_of_note"
+          ],
+          "type": "object"
+        }
+      },
+      "sha256": "4ede2643867d09f980911a0f6765673b4641139999eb103c7aa043172fbccde1"
+    },
+    "mt_get_act": {
+      "descriptor": {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true,
+          "readOnlyHint": true
+        },
+        "description": "Fetch Maltese document metadata by ELI coordinate.",
+        "inputSchema": {
+          "additionalProperties": false,
+          "properties": {
+            "eli": {
+              "description": "the coordinate after ``/eli/`` (e.g. ``\"cap/586\"``, ``\"act/2018/20\"``, ``\"const\"``).",
+              "type": "string"
+            },
+            "lang": {
+              "default": "eng",
+              "description": "``\"eng\"`` (default) or ``\"mlt\"``.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "eli"
+          ],
+          "type": "object"
+        },
+        "meta": {
+          "fastmcp": {
+            "tags": []
+          }
+        },
+        "name": "mt_get_act",
+        "outputSchema": {
+          "additionalProperties": true,
+          "description": "A Maltese legal document (metadata from JSON-LD).",
+          "properties": {
+            "dataset_note": {
+              "default": "legislation.mt serves consolidated Maltese law addressed by ELI coordinate: chapters (cap/{number}), the Constitution (const), subsidiary legislation (sl/{chapter}.{number}), Acts (act/{year}/{number}) and Legal Notices (ln/{year}/{number}). Metadata comes from the page's schema.org/ELI JSON-LD; the full text is only available as a PDF. There is no free-text search here - address documents by their ELI coordinate. Languages: English (eng) and Maltese (mlt).",
+              "type": "string"
+            },
+            "date_modified": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "document_type": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "eli": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "eli_uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "human_readable_citation": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "legal_force": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "legislation_date": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "legislation_identifier": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "source_url": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "title": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "type": "object"
+        }
+      },
+      "sha256": "7946c0ff10b33fd0677456ab890e61aa586d1f5e47137c576810be9454310dff"
+    },
+    "mt_get_text": {
+      "descriptor": {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": true,
+          "readOnlyHint": true
+        },
+        "description": "Fetch the full text of a Maltese document by ELI coordinate (from the official PDF).",
+        "inputSchema": {
+          "additionalProperties": false,
+          "properties": {
+            "eli": {
+              "description": "the coordinate after ``/eli/`` (e.g. ``\"cap/586\"``).",
+              "type": "string"
+            },
+            "lang": {
+              "default": "eng",
+              "description": "``\"eng\"`` (default) or ``\"mlt\"``.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "eli"
+          ],
+          "type": "object"
+        },
+        "meta": {
+          "fastmcp": {
+            "tags": []
+          }
+        },
+        "name": "mt_get_text",
+        "outputSchema": {
+          "additionalProperties": true,
+          "description": "Result of ``mt_get_text`` (text extracted from the official PDF).",
+          "properties": {
+            "byte_size": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "content": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "dataset_note": {
+              "default": "legislation.mt serves consolidated Maltese law addressed by ELI coordinate: chapters (cap/{number}), the Constitution (const), subsidiary legislation (sl/{chapter}.{number}), Acts (act/{year}/{number}) and Legal Notices (ln/{year}/{number}). Metadata comes from the page's schema.org/ELI JSON-LD; the full text is only available as a PDF. There is no free-text search here - address documents by their ELI coordinate. Languages: English (eng) and Maltese (mlt).",
+              "type": "string"
+            },
+            "eli": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "eli_uri": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "format": {
+              "default": "text/plain (extracted from the official PDF)",
+              "type": "string"
+            },
+            "human_readable_citation": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "pdf_url": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "source_url": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "text_note": {
+              "default": "Malta publishes the consolidated text only as PDF; mt_get_text downloads the official PDF and extracts the text with pypdf. Layout-dependent artefacts are possible - the PDF at source_url (via the page) is authoritative.",
+              "type": "string"
+            },
+            "title": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "type": "object"
+        }
+      },
+      "sha256": "5f89916e8fde55678aab1fd6311a36fe8d113f2d8ce61ad2dc2f80786584ef62"
+    }
+  },
+  "toolset_sha256": "ba152dfcf4e2d6def75b5a9ce1d0857002aaef1d244a2c97fe972d43fa7bb9d2"
+}
